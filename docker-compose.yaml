@@ -1,0 +1,21 @@
+services:
+  server:
+    image: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: ${SERVER_HOST}
+    env_file: .env
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    command: npm start
+  
+  nginx:
+    image: reverse-proxy
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: ${NGINX_HOST}
+    env_file: .env
+    ports:
+        - ${NGINX_PORT}:${NGINX_PORT}
