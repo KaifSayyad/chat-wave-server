@@ -66,18 +66,3 @@ Ensure you have the following installed on your machine:
 
 Once the server is up and running, you can access it at `http://localhost:<NGINX_PORT>`. Replace `<NGINX_PORT>` with the port number specified in your `.env` file (default is 9999).
 
-### Contributing
-
-We welcome contributions! Please fork this repository and submit pull requests.
-
-### License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### Contact
-
-For any questions or feedback, please open an issue or contact us at [email@example.com](mailto:email@example.com).
-
----
-
-Thank you for using ChatWave Server!
