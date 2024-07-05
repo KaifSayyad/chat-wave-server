@@ -6,9 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: ${SERVER_HOST}
     env_file: .env
-    ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
-    command: npm start
+    command: pm2-runtime start server.js --watch
   
   nginx:
     image: reverse-proxy
