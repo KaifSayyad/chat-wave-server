@@ -11,7 +11,6 @@ Follow the steps below to get your server up and running:
 Ensure you have the following installed on your machine:
 - [Git](https://git-scm.com/downloads)
 - [Docker](https://www.docker.com/products/docker-desktop)
-- [Docker Compose](https://docs.docker.com/compose/install/)
 
 ### Installation
 
