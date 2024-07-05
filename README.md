@@ -31,20 +31,26 @@ Ensure you have the following installed on your machine:
     ```sh
     cd server
     ```
+4. **To install all the dependencies:**
 
-4. **Go back to the ChatWave-server folder:**
+    ```sh
+    npm install
+    ```
+
+
+5. **Go back to the ChatWave-server folder:**
 
     ```sh
     cd ..
     ```
 
-5. **Create a `.env` file:**
+6. **Create a `.env` file:**
 
     ```sh
     touch .env
     ```
 
-6. **Add the following environment variables to the `.env` file:**
+7. **Open the .env file and paste the following environment variables to the `.env` file:**
 
     ```env
     SERVER_PORT=8888
