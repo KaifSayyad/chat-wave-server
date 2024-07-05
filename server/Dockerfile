@@ -1,4 +1,7 @@
-FROM node:20-alpine
+FROM node:20
+
+# Set NODE_ENV to development
+ENV NODE_ENV=development
 
 WORKDIR /usr/src/app
 
