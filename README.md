@@ -10,6 +10,7 @@ Follow the steps below to get your server up and running:
 
 Ensure you have the following installed on your machine:
 - [Git](https://git-scm.com/downloads)
+- [Nodejs](https://nodejs.org/en/download/package-manager)
 - [Docker](https://www.docker.com/products/docker-desktop)
 
 ### Installation
