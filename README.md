@@ -38,13 +38,27 @@ Ensure you have the following installed on your machine:
    ./server-release.sh
    ```
 
-4. **Run docker-compose**
+4. **Create a .env file**
+   ```sh
+   touch .env
+   ```
+
+5. **Paste the below config in .env file**
+
+   ```sh
+    SERVER_PORT=8888
+    SERVER_HOST=node-c
+    NGINX_PORT=9999
+    NGINX_HOST=nginx-c
+    ```
+
+6. **Run docker-compose**
 
     ```sh
     docker-compose up
     ```
 
-5. **Server should be up and running now!**
+7. **Server should be up and running now!**
    
 
 ### Usage
