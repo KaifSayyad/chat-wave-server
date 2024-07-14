@@ -24,7 +24,7 @@ Ensure you have the following installed on your machine:
 2. **Navigate to the ChatWave-server folder:**
 
     ```sh
-    cd ChatWave-server
+    cd chat-wave-server
     ```
 
 3. **Run the "server-release.sh" file and specify the frontend version you wish to use**
