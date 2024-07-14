@@ -9,10 +9,15 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 dotenv.config();
 
-const SERVER_PORT = process.env.SERVER_PORT || 3000;
+const SERVER_PORT = process.env.SERVER_PORT || 8888;
 
 const expressServer = app.listen(SERVER_PORT, (req, res) => {
     console.log('Server is running on port',SERVER_PORT);
+});
+
+
+app.get('/', (req, res) => {
+    res.send(req.headers);
 });
 
 const io = new Server(expressServer, {
@@ -20,7 +25,6 @@ const io = new Server(expressServer, {
         origin: '*',
     },
 });
-
 
 let queue = [];
 const socketMap = new Map();
