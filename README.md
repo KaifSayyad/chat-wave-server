@@ -1,6 +1,6 @@
 # ChatWave Server
 
-Welcome to the ChatWave Server repository! This project is designed to set up and run a server environment for the ChatWave application using Docker.
+Welcome to the ChatWave Server repository! First Checkout [ChatWave-client](https://github.com/KaifSayyad/chat-wave-client). This project is designed to set up and run a server environment for the ChatWave application using Docker.
 
 ## Getting Started
 
@@ -18,55 +18,48 @@ Ensure you have the following installed on your machine:
 1. **Clone the repository:**
 
     ```sh
-    git clone https://github.com/KaifSayyad/ChatWave-server.git
+    git clone https://github.com/KaifSayyad/chat-wave-server.git
     ```
 
 2. **Navigate to the ChatWave-server folder:**
 
     ```sh
-    cd ChatWave-server
+    cd chat-wave-server
     ```
 
-3. **Navigate to the server folder:**
+3. **Run the "server-release.sh" file and specify the frontend version you wish to use**
 
-    ```sh
-    cd server
-    ```
-4. **To install all the dependencies:**
+    To give permission to run sh file
+   ```sh
+   chmod u+x server-release.sh
+   ```
 
-    ```sh
-    npm install
-    ```
+   ```sh
+   ./server-release.sh
+   ```
 
+4. **Create a .env file**
+   ```sh
+   touch .env
+   ```
 
-5. **Go back to the ChatWave-server folder:**
+5. **Paste the below config in .env file**
 
-    ```sh
-    cd ..
-    ```
-
-6. **Create a `.env` file:**
-
-    ```sh
-    touch .env
-    ```
-
-7. **Open the .env file and paste the following environment variables to the `.env` file:**
-
-    ```env
+   ```sh
     SERVER_PORT=8888
     SERVER_HOST=node-c
     NGINX_PORT=9999
     NGINX_HOST=nginx-c
     ```
 
-7. **Build and start the Docker containers:**
+6. **Run docker-compose**
 
     ```sh
-    docker-compose up --build
+    docker-compose up
     ```
 
-8. **The server should boot up now.**
+7. **Server should be up and running now!**
+   
 
 ### Usage
 
