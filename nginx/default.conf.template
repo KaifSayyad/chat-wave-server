@@ -1,10 +1,10 @@
-
-server{
+server {
     listen ${NGINX_PORT};
     server_name ${NGINX_HOST};
-    
-    location /api {
-        proxy_set_header  X-Forward-For $proxy_add_x_forwarded_for;
+
+    # Proxy requests to the backend server at `/`
+    location / {
+        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Host $host;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
@@ -12,8 +12,9 @@ server{
         proxy_http_version 1.1;
     }
 
-    location / {
-        root /usr/share/nginx/html;
+    # Serve static files from `/site`
+    location /site/ {
+        alias /usr/share/nginx/html/;
         index index.html;
         try_files $uri $uri/ /index.html;
     }
