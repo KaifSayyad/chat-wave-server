@@ -1,7 +1,7 @@
 FROM nginx:latest
 
-WORKDIR /etc/nginx/templates
-
-COPY ./dist-* /usr/share/nginx/html/
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY ./dist-* .
 # Copy the nginx configuration file
-COPY /default.conf.template /etc/nginx/templates/default.conf.template
+COPY default.conf.template /etc/nginx/templates/default.conf.template

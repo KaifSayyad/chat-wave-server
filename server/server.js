@@ -16,14 +16,11 @@ const expressServer = app.listen(SERVER_PORT, (req, res) => {
 });
 
 
-app.get('/', (req, res) => {
-    res.send('ChatWave Server is running');
-});
-
 const io = new Server(expressServer, {
     cors: {
         origin: '*',
     },
+    path: '/socket.io'
 });
 
 let queue = [];
