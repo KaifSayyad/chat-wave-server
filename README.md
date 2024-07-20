@@ -13,6 +13,7 @@ Ensure you have the following installed on your machine:
 - [Nodejs](https://nodejs.org/en/download/package-manager)
 - [Docker](https://www.docker.com/products/docker-desktop)
 
+
 ### Installation
 
 1. **Clone the repository:**
@@ -27,16 +28,24 @@ Ensure you have the following installed on your machine:
     cd chat-wave-server
     ```
 
-3. **Run the "server-release.sh" file and specify the frontend version you wish to use**
+3. **Run the "server-release.sh" file and specify the frontend version you wish to use, you can go checkout [build-files](https://github.com/KaifSayyad/chat-wave-client-build-files) for frontend versions.**
 
-    To give permission to run sh file
-   ```sh
-   chmod u+x server-release.sh
-   ```
 
-   ```sh
-   ./server-release.sh
-   ```
+    **For Mac and Linux users**
+        To give permission to run sh file
+    ```sh
+    chmod u+x server-release.sh
+    ```
+
+    ```sh
+    ./server-release.sh
+    ```
+
+    **For Windows users**
+        Open git bash terminal in current directory and Run
+    ```sh
+    sh server-release.sh
+    ```
 
 4. **Create a .env file**
    ```sh
