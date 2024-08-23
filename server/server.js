@@ -1,19 +1,36 @@
 import express from 'express';
+import { Router } from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
-import { Server } from 'socket.io';
 import cors from 'cors';
+import mongoose from 'mongoose';
+import Users from './models/userModel.js';
+import Chats from './models/chatModel.js';
+import Messages from './models/messageModel.js';
+import { Server } from 'socket.io';
+
+import socketRouter from './routes/sockerRouter.js';
+import userRouter from './routes/userRouter.js';
+
+
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 dotenv.config();
 
 const SERVER_PORT = process.env.SERVER_PORT || 8888;
+const MONGO_PORT = process.env.MONGO_PORT || 27017;
+const MONGO_URL = process.env.MONGO_URL || 'mongodb+srv://kaifalisayyad:pDW7d4wqwCTI1zUN@cluster0.is9kj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 const expressServer = app.listen(SERVER_PORT, (req, res) => {
     console.log('Server is running on port',SERVER_PORT);
 });
+
+
+mongoose.connect(MONGO_URL).then(
+    app.listen(MONGO_PORT, () => console.log(`Mongo Server running on port: http://localhost:${MONGO_PORT}/`))
+).catch((error) => console.log(error.message));
 
 
 const io = new Server(expressServer, {
@@ -24,6 +41,7 @@ const io = new Server(expressServer, {
 });
 
 let queue = [];
+
 const socketMap = new Map();
 const partnerMap = new Map();
 
@@ -89,3 +107,8 @@ io.on('connection', (socket) => {
         }
     });
 });
+
+const router = Router();
+app.use('/api', router);
+router.use('/socket', socketRouter);
+router.use('/users', userRouter);
