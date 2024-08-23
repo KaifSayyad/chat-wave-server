@@ -92,6 +92,13 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('stop-searching', (data) => {
+        const index = queue.indexOf(data);
+        if (index > -1) {
+            queue.splice(index, 1);
+        }
+    });
+
     socket.on('message', (data) => {
         try {
             const partnerId = partnerMap.get(socket.id);
