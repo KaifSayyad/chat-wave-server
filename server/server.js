@@ -8,8 +8,9 @@ import Users from './models/userModel.js';
 import Chats from './models/chatModel.js';
 import Messages from './models/messageModel.js';
 import { Server } from 'socket.io';
-import socketRouter from './routes/sockerRouter.js';
+import socketRouter from './routes/socketRouter.js';
 import userRouter from './routes/userRouter.js';
+import chatRouter from './routes/chatRouter.js';
 import { createClient } from 'redis';
 
 const app = express();
@@ -187,3 +188,4 @@ const router = Router();
 app.use('/api', router);
 router.use('/socket', socketRouter);
 router.use('/users', userRouter);
+router.use('/chats', chatRouter);
