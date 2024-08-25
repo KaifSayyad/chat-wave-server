@@ -5,6 +5,15 @@ const chatSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Message'
   }],
+  user1Id: {
+    type: String,
+    required: true
+  },
+  user2Id: {
+    type: String,
+    ref: 'User',
+    required: true
+  },
   chatCreatedTimestamp: {
     type: Date,
     required: true,

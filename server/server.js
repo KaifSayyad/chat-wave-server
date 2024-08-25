@@ -1,7 +1,6 @@
 import express from 'express';
 import { Router } from 'express';
 import dotenv from 'dotenv';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import Users from './models/userModel.js';
@@ -30,7 +29,7 @@ const expressServer = app.listen(SERVER_PORT, (req, res) => {
 // Connect to MongoDB
 mongoose.connect(MONGO_URL).then(
     app.listen(MONGO_PORT, () => console.log(`Mongo Server running on port: http://localhost:${MONGO_PORT}/`))
-).catch((error) => console.log(error.message));
+).catch((error) => console.log("mongo error", error.message));
 
 // Create a Redis client
 const client = createClient({
@@ -42,7 +41,7 @@ const client = createClient({
 });
 
 client.on('error', (err) => {
-    console.log('Error: ' + err);
+    console.log('Redis Error: ' + err);
 });
 
 //Connecting to the redis client
@@ -120,14 +119,16 @@ io.on('connection', (socket) => {
             queue.push(data);
         } else {
             let partnerId = queue.pop();
-            socket.emit('partner-found', partnerId);
-            const partnerSocket = socketMap.get(partnerId);
-            if (partnerSocket) {
-                partnerSocket.emit('partner-found', socket.id);
+            if(partnerId !== data){
+                socket.emit('partner-found', partnerId);
+                const partnerSocket = socketMap.get(partnerId);
+                if (partnerSocket) {
+                    partnerSocket.emit('partner-found', socket.id);
+                }
+                partnerMap.set(socket.id, partnerId);
+                partnerMap.set(partnerId, socket.id);
+                console.log(`Partner found for ${socket.id} and ${partnerId}`);
             }
-            partnerMap.set(socket.id, partnerId);
-            partnerMap.set(partnerId, socket.id);
-            console.log(`Partner found for ${socket.id} and ${partnerId}`);
         }
     });
 
@@ -150,6 +151,42 @@ io.on('connection', (socket) => {
                 }
             }
             
+        } catch (error) {
+            console.error(error);
+        }
+    });
+    
+    //Handle save message request
+    socket.on('send-save-request', async () => {
+        console.log("Sending Save request");
+        try {
+            const partnerId = partnerMap.get(socket.id);
+            if(partnerId){
+                const partnerSocket = socketMap.get(partnerId);
+                if (partnerSocket) {
+                    partnerSocket.emit('save-request');
+                }
+            }else{
+                console.log('Partner not found');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    //Handle save-request-accepted
+    socket.on('save-request-accepted', async (data) => {
+        console.log("Save request accepted");
+        try {
+            const partnerId = partnerMap.get(socket.id);
+            if(partnerId){
+                const partnerSocket = socketMap.get(partnerId);
+                if (partnerSocket) {
+                    partnerSocket.emit('save-request-accepted', data);
+                }
+            }else{
+                console.log('Partner not found');
+            }
         } catch (error) {
             console.error(error);
         }
@@ -181,6 +218,7 @@ io.on('connection', (socket) => {
         }
     });
 
+    
 
 });
 

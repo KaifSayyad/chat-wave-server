@@ -3,9 +3,10 @@ import Chat from './../models/chatModel.js'; // Adjust the import path according
 import User from './../models/userModel.js'; // Adjust the import path according to your project structure
 
 const saveChat = async (req, res) => {
+    console.log("saveChat controller");
     try {
       const { userId, partnerId, messages } = req.body;
-  
+      console.log(req.body);
       if (!userId || !partnerId || !messages) {
         return res.status(400).json({ error: "Missing required fields" });
       }
@@ -22,6 +23,8 @@ const saveChat = async (req, res) => {
   
       // Create a new chat with references to the saved messages
       const chat = await Chat.create({
+        user1Id: userId,
+        user2Id: partnerId,
         messages: messageIds
       });
   
@@ -88,4 +91,46 @@ const getChatMessages = async (req, res) => {
   }
 };
 
-export { saveChat, getUserChats, getChatMessages };
+const updateChat = async (req, res) => {
+  try {
+    const { userId, chatId, message } = req.body;
+
+    if (!userId || !chatId || !message) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Save the new message
+    const newMessage = await Message.create({
+      body: message.body,
+      from: userId,
+      timestamp: new Date() // Set current timestamp
+    });
+
+    // Find the chat by chatId and update the messages field
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json({ error: 'Chat not found' });
+    }
+
+    console.log("chat from controller", chat);
+    chat.messages.push(newMessage._id);
+    await chat.save();
+
+    res.status(201).json(newMessage);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const deleteAll = async (req, res) => {
+  try {
+    await Message.deleteMany({});
+    await Chat.deleteMany({});
+    res.status(200).json({ message: 'All data deleted' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+export { saveChat, getUserChats, getChatMessages, updateChat, deleteAll };
