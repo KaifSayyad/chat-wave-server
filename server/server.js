@@ -155,6 +155,7 @@ io.on('connection', async (socket) => {
             }
             partnerMap.set(socket.id, partnerSocketId);
             partnerMap.set(partnerSocketId, socket.id);
+            specificPartnerMap.delete(socket_userId.get(socket.id));
             console.log(`Partner found for ${socket.id} and ${partnerSocketId}`);
         }
         else{
