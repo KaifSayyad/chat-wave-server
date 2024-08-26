@@ -3,10 +3,8 @@ import Chat from './../models/chatModel.js'; // Adjust the import path according
 import User from './../models/userModel.js'; // Adjust the import path according to your project structure
 
 const saveChat = async (req, res) => {
-    console.log("saveChat controller");
     try {
       const { userId, partnerId, messages } = req.body;
-      console.log(req.body);
       if (!userId || !partnerId || !messages) {
         return res.status(400).json({ error: "Missing required fields" });
       }
@@ -81,7 +79,7 @@ const getChatMessages = async (req, res) => {
     // Modify the `from` field for each message based on the userId
     const messages = chat.messages.map(msg => ({
       ...msg._doc,
-      from: msg.from === userId ? 'me' : 'partner'
+      from: msg.from === userId ? 'me' : 'partner',
     }));
 
     // Return the array of messages with the modified `from` field
@@ -93,18 +91,28 @@ const getChatMessages = async (req, res) => {
 
 const updateChat = async (req, res) => {
   try {
-    const { userId, chatId, message } = req.body;
-
-    if (!userId || !chatId || !message) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    const { userId, chatId, messages } = req.body; // Expect messages to be an array
+    if (!userId || !chatId || !messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: 'Missing required fields or messages is not an array' });
     }
 
-    // Save the new message
-    const newMessage = await Message.create({
-      body: message.body,
-      from: userId,
-      timestamp: new Date() // Set current timestamp
-    });
+    // Validate messages format
+    for (const message of messages) {
+      if (!message.body || typeof message.body !== 'string') {
+        return res.status(400).json({ error: 'Invalid message format' });
+      }
+    }
+
+    // Create new messages
+    const newMessages = await Promise.all(
+      messages.map((message) =>
+        Message.create({
+          body: message.body,
+          from: userId,
+          timestamp: new Date(), // Set current timestamp
+        })
+      )
+    );
 
     // Find the chat by chatId and update the messages field
     const chat = await Chat.findById(chatId);
@@ -112,12 +120,30 @@ const updateChat = async (req, res) => {
       return res.status(404).json({ error: 'Chat not found' });
     }
 
-    console.log("chat from controller", chat);
-    chat.messages.push(newMessage._id);
+    // Add the new message IDs to the chat
+    chat.messages.push(...newMessages.map(msg => msg._id));
     await chat.save();
 
-    res.status(201).json(newMessage);
+    res.status(201).json(newMessages); // Return all new messages
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+const getPartnerId = async (req, res) => {
+  const { userId, chatId }= req.params;
+
+  try {
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json({ error: 'Chat not found' });
+    }else{
+      let partnerId = chat.user1Id === userId ? chat.user2Id : chat.user1Id;
+      res.status(200).json({partnerId: partnerId});
+    }
+  }
+  catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
@@ -133,4 +159,4 @@ const deleteAll = async (req, res) => {
 }
 
 
-export { saveChat, getUserChats, getChatMessages, updateChat, deleteAll };
+export { saveChat, getUserChats, getChatMessages, updateChat, getPartnerId, deleteAll };

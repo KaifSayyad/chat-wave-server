@@ -59,16 +59,26 @@ const io = new Server(expressServer, {
 
 let queue = [];
 
-const socketMap = new Map();
-const partnerMap = new Map();
+const socketMap = new Map();                //Map of socketId, socket
+const partnerMap = new Map();               //Map of socketId, socketId
+const socket_userId = new Map();            //Map of socketId, userId
+const specificPartnerMap = new Map();       //Map of userId, userId
+const userId_socket = new Map();            //Map of userId, socketId
+
 
 // Handle socket connection
-io.on('connection', (socket) => {
-    console.log(`A user connected with socket id = ${socket.id}`);
+io.on('connection', async (socket) => {
+    const userId = socket.handshake.query.userId;
+    console.log(`A user connected with socket id = ${socket.id} and userId = ${userId ? userId : 'Anonymous' }`);
     socketMap.set(socket.id, socket);
+    if(userId){
+        socket_userId.set(socket.id, userId);
+        userId_socket.set(userId, socket.id);
+    }
+    if(userId) await client.set(userId, socket.id);
 
     // Handle socket disconnection
-    socket.on('disconnect', async (data) => {
+    socket.on('disconnect', async () => {
         console.log(`User disconnected with socket id = ${socket.id}`);
         const partnerId = partnerMap.get(socket.id);
         if (partnerId) {
@@ -80,20 +90,21 @@ io.on('connection', (socket) => {
             partnerMap.delete(socket.id);
         }
         socketMap.delete(socket.id);
+        try{
+            await client.del(socket_userId.get(socket.id));
+            socket_userId.delete(socket.id);
+            userId_socket.delete(socket_userId.get(socket.id));
+        }catch(error){
+            console.error("Anonymous user disconnected");
+        }
         const index = queue.indexOf(socket.id);
         if (index > -1) {
             queue.splice(index, 1);
         }
-        // await client.del(data.userId, (err, reply) => {
-        //     if (err) {
-        //         console.log(err);
-        //     }
-        //     console.log(reply);
-        // });
     });
 
     // Handle forced socket disconnection
-    socket.on('forceDisconnect',async function (data) {
+    socket.on('forceDisconnect',async () => {
         const partnerId = partnerMap.get(socket.id);
         if (partnerId) {
             const partnerSocket = socketMap.get(partnerId);
@@ -108,7 +119,6 @@ io.on('connection', (socket) => {
         if (index > -1) {
             queue.splice(index, 1);
         }
-        // await client.del(data.userId);
         socket.disconnect();
     });
 
@@ -132,6 +142,27 @@ io.on('connection', (socket) => {
         }
     });
 
+    //Look for partner with specific id
+    socket.on('look-for-partnerId', (data) =>{
+        const partnerId = data.partnerId;
+        console.log(`Request to look for partner with id = ${partnerId} received from userId = ${socket_userId.get(socket.id)}`);
+        if(specificPartnerMap.get(partnerId)){
+            const partnerSocketId = userId_socket.get(partnerId);
+            const partnerSocket = socketMap.get(partnerSocketId);
+            socket.emit('partner-found', partnerSocketId);
+            if (partnerSocket) {
+                partnerSocket.emit('partner-found', socket.id);
+            }
+            partnerMap.set(socket.id, partnerSocketId);
+            partnerMap.set(partnerSocketId, socket.id);
+            console.log(`Partner found for ${socket.id} and ${partnerSocketId}`);
+        }
+        else{
+            specificPartnerMap.set(socket_userId.get(socket.id), partnerId);
+        }
+        console.log(specificPartnerMap);
+    });
+
     // Handle stopping the search for a partner
     socket.on('stop-searching', (data) => {
         const index = queue.indexOf(data);
@@ -147,6 +178,7 @@ io.on('connection', (socket) => {
             if(partnerId){
                 const partnerSocket = socketMap.get(partnerId);
                 if (partnerSocket) {
+                    console.log(`Message from ${socket.id} to ${partnerId}`, data);
                     partnerSocket.emit('message', data);
                 }
             }
@@ -192,15 +224,18 @@ io.on('connection', (socket) => {
         }
     });
 
-    //Add user to redis cache
-    socket.on('add-to-redis', async (data) => {
-        try{
-            // console.log(data);
-            if(data !== null && data !== undefined && data.socketId !== null && data.socketId !== undefined){
-                await client.set(data.userId, data.socketId);
-            }
-            else {
-                console.log('SocketId is null or undefined');
+    //Handle save request rejected
+    socket.on('save-request-rejected', async () => {
+        console.log("Save request rejected");
+        try {
+            const partnerId = partnerMap.get(socket.id);
+            if(partnerId){
+                const partnerSocket = socketMap.get(partnerId);
+                if (partnerSocket) {
+                    partnerSocket.emit('save-request-rejected');
+                }
+            }else{
+                console.log('Partner not found');
             }
         } catch (error) {
             console.error(error);
@@ -214,7 +249,7 @@ io.on('connection', (socket) => {
             console.log(`userId = ${data.userId}, socketId = ${value}`);
 
         } catch (error) {
-            console.error(error);
+            console.error('User not present in redis cache');
         }
     });
 
