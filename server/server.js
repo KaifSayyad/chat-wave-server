@@ -155,13 +155,13 @@ io.on('connection', async (socket) => {
             }
             partnerMap.set(socket.id, partnerSocketId);
             partnerMap.set(partnerSocketId, socket.id);
-            specificPartnerMap.delete(socket_userId.get(socket.id));
+            specificPartnerMap.delete(partnerId);
             console.log(`Partner found for ${socket.id} and ${partnerSocketId}`);
         }
         else{
             specificPartnerMap.set(socket_userId.get(socket.id), partnerId);
         }
-        console.log(specificPartnerMap);
+        // console.log(specificPartnerMap);
     });
 
     // Handle stopping the search for a partner
@@ -179,7 +179,7 @@ io.on('connection', async (socket) => {
             if(partnerId){
                 const partnerSocket = socketMap.get(partnerId);
                 if (partnerSocket) {
-                    console.log(`Message from ${socket.id} to ${partnerId}`, data);
+                    // console.log(`Message from ${socket.id} to ${partnerId}`, data);
                     partnerSocket.emit('message', data);
                 }
             }
