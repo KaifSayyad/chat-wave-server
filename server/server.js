@@ -12,14 +12,15 @@ import userRouter from './routes/userRouter.js';
 import chatRouter from './routes/chatRouter.js';
 import { createClient } from 'redis';
 
+dotenv.config();
+
 const app = express();
 app.use(cors());
 app.use(express.json());
-dotenv.config();
 
-const SERVER_PORT = process.env.SERVER_PORT || 8888;
-const MONGO_PORT = process.env.MONGO_PORT || 27017;
-const MONGO_URL = process.env.MONGO_URL || 'mongodb+srv://kaifalisayyad:pDW7d4wqwCTI1zUN@cluster0.is9kj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const SERVER_PORT = process.env.SERVER_PORT;
+const MONGO_PORT = process.env.MONGO_PORT;
+const MONGO_URL = process.env.MONGO_URL;
 
 // Create an Express server
 const expressServer = app.listen(SERVER_PORT, (req, res) => {
@@ -33,10 +34,10 @@ mongoose.connect(MONGO_URL).then(
 
 // Create a Redis client
 const client = createClient({
-    password: 'eFv1GynZU4ZkHKjzDXXzBxmbar6BkMUn',
+    password: process.env.REDIS_PASSWORD,
     socket: {
-        host: 'redis-19418.c305.ap-south-1-1.ec2.redns.redis-cloud.com',
-        port: 19418
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT
     }
 });
 
