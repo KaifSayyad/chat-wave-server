@@ -8,6 +8,6 @@ WORKDIR /usr/src/app
 COPY /package*.json /usr/src/app
 RUN npm install
 # Bundle app source
-COPY ./server.js /usr/src/app
+COPY . /usr/src/app
 
 RUN npm install pm2 -g

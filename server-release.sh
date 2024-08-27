@@ -12,11 +12,11 @@ cd chat-wave-client-build-files
 # Checkout the specific version
 git checkout "dist-$version"
 
-# Move the dist folder to the desired location
-mv dist-$version /Users/kaifalimahemudalisayyad/Files/Projects/ChatWave/chat-wave-server/nginx
+# Move the dist folder to the desired location using relative paths
+mv "dist-$version" ./../nginx
 
 # Cleanup - remove the cloned repository
 cd ..
 rm -rf chat-wave-client-build-files
 
-echo "dist-$version folder has been pulled and moved to /Users/kaifalimahemudalisayyad/Files/Projects/ChatWave/chat-wave-server/nginx"
+echo "dist-$version folder has been pulled and moved to ../chat-wave-server/nginx"
