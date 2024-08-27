@@ -45,6 +45,10 @@ client.on('error', (err) => {
     console.log('Redis Error: ' + err);
 });
 
+client.on('connect', () => {
+    console.log('Redis connected on port:', process.env.REDIS_PORT);
+});
+
 //Connecting to the redis client
 await client.connect();
 
@@ -146,7 +150,6 @@ io.on('connection', async (socket) => {
     //Look for partner with specific id
     socket.on('look-for-partnerId', (data) =>{
         const partnerId = data.partnerId;
-        console.log(`Request to look for partner with id = ${partnerId} received from userId = ${socket_userId.get(socket.id)}`);
         if(specificPartnerMap.get(partnerId)){
             const partnerSocketId = userId_socket.get(partnerId);
             const partnerSocket = socketMap.get(partnerSocketId);
@@ -192,7 +195,7 @@ io.on('connection', async (socket) => {
     
     //Handle save message request
     socket.on('send-save-request', async () => {
-        console.log("Sending Save request");
+        // console.log("Sending Save request");
         try {
             const partnerId = partnerMap.get(socket.id);
             if(partnerId){
@@ -210,7 +213,7 @@ io.on('connection', async (socket) => {
 
     //Handle save-request-accepted
     socket.on('save-request-accepted', async (data) => {
-        console.log("Save request accepted");
+        // console.log("Save request accepted");
         try {
             const partnerId = partnerMap.get(socket.id);
             if(partnerId){
@@ -228,7 +231,7 @@ io.on('connection', async (socket) => {
 
     //Handle save request rejected
     socket.on('save-request-rejected', async () => {
-        console.log("Save request rejected");
+        // console.log("Save request rejected");
         try {
             const partnerId = partnerMap.get(socket.id);
             if(partnerId){

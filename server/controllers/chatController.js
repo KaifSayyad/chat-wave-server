@@ -49,23 +49,34 @@ const saveChat = async (req, res) => {
     }
   };
 
-const getUserChats = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    // Find the user by userId and populate the chats field
-    const user = await User.findOne({ userId: userId }).populate('chats');
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+  const getUserChats = async (req, res) => {
+    try {
+      const { userId } = req.params;
+  
+      // Find the user by userId and populate the chats field
+      const user = await User.findOne({ userId: userId }).populate('chats');
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Create a new array with partnerName added to each chat
+      const chatsWithPartnerName = await Promise.all(user.chats.map(async (chat) => {
+        const partnerId = chat.user1Id === userId ? chat.user2Id : chat.user1Id;
+        const partner = await User.findOne({ userId: partnerId });
+        return {
+          ...chat.toObject(), // Convert Mongoose document to plain object
+          partnerName: partner.username
+        };
+      }));
+  
+      // Return the array of chats
+      res.status(200).json(chatsWithPartnerName);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-
-    // Return the array of chats
-    res.status(200).json(user.chats);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+  };
+  
 
 const getChatMessages = async (req, res) => {
   try {
