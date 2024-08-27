@@ -25,10 +25,38 @@ Ensure you have the following installed on your machine:
 2. **Navigate to the ChatWave-server folder:**
 
     ```sh
-    cd chat-wave-server
+    cd chat-wave-server/server
     ```
 
-3. **Run the "server-release.sh" file and specify the frontend version you wish to use, you can go checkout [build-files](https://github.com/KaifSayyad/chat-wave-client-build-files) for frontend versions.**
+4. **Create a .env file**
+   ```sh
+   touch .env
+   ```
+5. **Add following environment variables**
+
+    ```sh
+    SERVER_PORT=8888
+    SERVER_HOST=node-c
+    NGINX_PORT=9999
+    NGINX_HOST=nginx-c
+
+    MONGO_URL = 'your_mongodb_cloud_url'
+    MONGO_PORT = 27017
+
+    REDIS_HOST = 'your_redis_host_uri'
+    REDIS_PASSWORD = 'your_redis_password'
+    REDIS_PORT = 19418
+    ```
+
+    Also you'll need to set up [Mongo Atlas Cluster](https://www.mongodb.com/products/platform/atlas-database) And [Redis Cloud Cluster](https://redis.io/try-free/). 
+    If you want to use mine mail me at [mail](kaifalisayyad@gmail.com) with SUBJECT : ENV KEYS FOR CHATWAVE
+
+6. **Go back to previous directory**
+    ```sh
+    cd ..
+    ```
+
+7. **Run the "server-release.sh" file and specify the frontend version you wish to use, you can go checkout [build-files](https://github.com/KaifSayyad/chat-wave-client-build-files) for frontend versions.**
 
 
     **For Mac and Linux users** <br>
@@ -47,27 +75,13 @@ Ensure you have the following installed on your machine:
     sh server-release.sh
     ```
 
-4. **Create a .env file**
-   ```sh
-   touch .env
-   ```
-
-5. **Paste the below config in .env file**
-
-   ```sh
-    SERVER_PORT=8888
-    SERVER_HOST=node-c
-    NGINX_PORT=9999
-    NGINX_HOST=nginx-c
-    ```
-
-6. **Run docker-compose**
+8. **Run docker-compose**
 
     ```sh
     docker-compose up
     ```
 
-7. **Server should be up and running now!**
+9. **Server should be up and running now!**
    
 
 ### Usage
