@@ -50,6 +50,7 @@ const saveChat = async (req, res) => {
   };
 
   const getUserChats = async (req, res) => {
+    console.log("request to fetch user chats");
     try {
       const { userId } = req.params;
   
@@ -71,6 +72,7 @@ const saveChat = async (req, res) => {
       }));
   
       // Return the array of chats
+      // console.log(chatsWithPartnerName);
       res.status(200).json(chatsWithPartnerName);
     } catch (error) {
       res.status(500).json({ error: error.message });
