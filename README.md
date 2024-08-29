@@ -63,7 +63,7 @@ Ensure you have the following installed on your machine:
     ```
 
     Also you'll need to set up [Mongo Atlas Cluster](https://www.mongodb.com/products/platform/atlas-database) And [Redis Cloud Cluster](https://redis.io/try-free/). 
-    If you want to use mine [mail](kaifalisayyad@gmail.com) me with SUBJECT : ENV KEYS FOR CHATWAVE
+    If you want to use mine mail me at [kaifalisayyad](mailto:kaifalisayyad@gmail.com?subject=[GitHub]%20ENV%20KEYS%20FOR%20CHAT%20WAVE)
 
 9. **Go back to previous directory**
     ```sh
