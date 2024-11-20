@@ -12,6 +12,7 @@ import userRouter from './routes/userRouter.js';
 import chatRouter from './routes/chatRouter.js';
 import { createClient } from 'redis';
 
+
 dotenv.config();
 
 const app = express();

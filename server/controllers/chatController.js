@@ -50,13 +50,13 @@ const saveChat = async (req, res) => {
   };
 
   const getUserChats = async (req, res) => {
-    console.log("request to fetch user chats");
+    // console.log("request to fetch user chats");
     try {
       const { userId } = req.params;
   
       // Find the user by userId and populate the chats field
       const user = await User.findOne({ userId: userId }).populate('chats');
-  
+      
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
